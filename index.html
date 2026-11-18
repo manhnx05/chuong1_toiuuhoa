@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Thi Giải Tích Lồi & Tối Ưu Hóa (100 Câu)</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">Phenikaa University - Tài liệu chuẩn</div>
+            <h1>📝 Ngân Hàng Đề Thi: Giải Tích Lồi & Tối Ưu Hóa</h1>
+            <p class="subtitle">100 câu trắc nghiệm chuẩn hóa — Đầy đủ đáp án & Lời giải chi tiết</p>
+        </header>
+
+        <!-- Sticky Control Center -->
+        <div class="controls">
+            <div class="controls-top">
+                <div class="timer" id="timerBox">⏱️ Thời gian: <span id="timerText">00:00</span></div>
+                <div class="progress-info">
+                    <span id="progressText">Đã trả lời: 0/100</span>
+                    <span id="progressPercent">(0%)</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="submitQuiz()">📊 Chấm Điểm</button>
+                <button class="btn btn-warning" onclick="togglePalette()">🗺️ Bảng 100 Câu</button>
+                <button class="btn btn-secondary" onclick="confirmReset()">🔄 Làm Lại</button>
+                <button class="btn btn-info" id="btnViewResults" onclick="scrollToResults()" style="display:none;">⬇ Kết Quả</button>
+            </div>
+
+            <!-- Filter Buttons (Active after submit) -->
+            <div class="filter-group" id="filterGroup" style="display:none;">
+                <span class="filter-label">Bộ lọc câu hỏi:</span>
+                <button class="filter-btn active" data-filter="all" onclick="filterQuestions('all')">Tất cả (100)</button>
+                <button class="filter-btn btn-filter-wrong" data-filter="wrong" onclick="filterQuestions('wrong')">Chỉ câu sai ❌ (<span id="wrongFilterCount">0</span>)</button>
+                <button class="filter-btn btn-filter-unanswered" data-filter="unanswered" onclick="filterQuestions('unanswered')">Chưa làm ⚪ (<span id="unansweredFilterCount">0</span>)</button>
+                <button class="filter-btn btn-filter-correct" data-filter="correct" onclick="filterQuestions('correct')">Câu đúng ✅ (<span id="correctFilterCount">0</span>)</button>
+            </div>
+        </div>
+
+        <!-- 100 Questions Navigator Palette -->
+        <div class="palette-container" id="paletteContainer">
+            <div class="palette-header">
+                <h3>🗺️ Bảng Điều Hướng 100 Câu</h3>
+                <button class="close-palette-btn" onclick="togglePalette()">✕ Đóng</button>
+            </div>
+            <div class="palette-legend">
+                <span><span class="dot dot-unanswered"></span> Chưa làm</span>
+                <span><span class="dot dot-selected"></span> Đã chọn</span>
+                <span class="graded-legend" style="display:none;"><span class="dot dot-correct"></span> Đúng</span>
+                <span class="graded-legend" style="display:none;"><span class="dot dot-wrong"></span> Sai</span>
+            </div>
+            <div class="palette-grid" id="paletteGrid"></div>
+        </div>
+
+        <!-- Results Section (Visible after submit) -->
+        <div id="results" class="results hidden">
+            <div class="results-summary">
+                <h2>📊 Kết Quả Bài Làm</h2>
+                <div class="score-cards">
+                    <div class="score-card correct">
+                        <span class="score-number" id="correctCount">0</span>
+                        <span class="score-label">Đúng ✅</span>
+                    </div>
+                    <div class="score-card wrong">
+                        <span class="score-number" id="wrongCount">0</span>
+                        <span class="score-label">Sai ❌</span>
+                    </div>
+                    <div class="score-card unanswered">
+                        <span class="score-number" id="unansweredCount">0</span>
+                        <span class="score-label">Chưa làm ⚪</span>
+                    </div>
+                    <div class="score-card total">
+                        <span class="score-number" id="scoreScale10">0/10</span>
+                        <span class="score-label">Điểm thang 10 (<span id="scorePercent">0%</span>)</span>
+                    </div>
+                </div>
+
+                <!-- Section breakdown -->
+                <div class="section-stats">
+                    <h3>📈 Điểm Từng Phần Kiến Thức</h3>
+                    <div class="section-stat-grid" id="sectionStatsGrid"></div>
+                </div>
+            </div>
+
+            <!-- Quick Wrong Questions Review List -->
+            <div id="wrongList" class="wrong-list"></div>
+        </div>
+
+        <!-- Main Questions Feed -->
+        <div id="quizContainer"></div>
+
+        <!-- Bottom Controls -->
+        <div class="controls bottom-controls">
+            <button class="btn btn-primary" onclick="submitQuiz()">📊 Chấm Điểm</button>
+            <button class="btn btn-warning" onclick="togglePalette()">🗺️ Bảng 100 Câu</button>
+            <button class="btn btn-secondary" onclick="confirmReset()">🔄 Làm Lại</button>
+            <button class="btn btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ Về Đầu Trang</button>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
